@@ -41,7 +41,7 @@ proc open*(g:var GZFile, path:string, mode:string="r", bufsize:int=DEFAULT_BUF_S
     g.c.gzbuffer(bufsize.cuint)
   return true
 
-template tell*(g:GZFile): int64 = g.c.gztell
+proc tell*(g:GZFile): int64 = g.c.gztell
 proc close*(g:GZFile): int {.discardable.} = g.c.gzclose.int
 
 proc readBuffer*(g:GZFile, buffer:pointer, len:Natural): int =
@@ -68,7 +68,7 @@ proc write_line*(g:GZFile, lines: varargs[string]): bool {.inline, discardable.}
   g.write(lines)
   result = 0 != g.c.gzputc('\n'.cint)
 
-proc readLine(g:GZFile, line: var string): bool =
+proc readLine*(g:GZFile, line: var string): bool =
   ## Newline character(s) are not part of the returned string. Returns false if the end of the file has been reached, true otherwise. If false is returned line contains no new data
   if line.len < 64: line.setLen(64)
   var off = 0
